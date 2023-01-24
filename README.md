@@ -1,0 +1,1 @@
+# app_qrcode_scanner_flutter_django
