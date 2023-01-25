@@ -1,5 +1,8 @@
+import 'package:app_frontend/api/auth/api.auth.dart';
+import 'package:app_frontend/model/todo.model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -10,12 +13,25 @@ class Scanner extends StatefulWidget {
 
 class _ScannerState extends State<Scanner> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
+  final todoTitleController = TextEditingController();
   QRViewController? controller;
 
   @override
   void dispose() {
     controller?.dispose();
     super.dispose();
+  }
+
+  void onAdd(String? textVal) {
+    //final String textVal = todoTitleController.text;
+    // final String desVal = todoDesController.text;
+
+    //if (textVal.isNotEmpty) {
+    final Todo todo = Todo(
+      title: textVal,
+    );
+    Provider.of<TodoProvider>(context, listen: false).addTodo(todo);
+    //}
   }
 
   @override
@@ -72,6 +88,9 @@ class _ScannerState extends State<Scanner> {
       var scanData2 = scanData;
       if (await canLaunch(scanData2.code.toString())) {
         await launch(scanData.code.toString());
+        onAdd(scanData.code.toString());
+        print('Achille QRCODE WAPI 11111111 $scanData.code');
+
         controller.resumeCamera();
       } else {
         showDialog(
@@ -91,6 +110,8 @@ class _ScannerState extends State<Scanner> {
                 TextButton(
                   child: Text('Ok'),
                   onPressed: () {
+                    onAdd(scanData.code);
+                    print('Achille QRCODE WAPI $scanData.code');
                     Navigator.of(context).pop();
                   },
                 ),
