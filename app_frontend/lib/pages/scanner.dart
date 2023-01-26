@@ -23,7 +23,7 @@ class _ScannerState extends State<Scanner> {
   //TextEditingController controller = TextEditingController();
 
   //Client client = http.Client();
-  Client client = http.Client();
+
   List<Todo> todoes = [];
 
   QRViewController? controller;
@@ -62,6 +62,10 @@ class _ScannerState extends State<Scanner> {
   // var client = http.Client();
   // this is the function scanne
   void addFuctionScanne(String title) async {
+    //If you're making multiple requests to the same server, you can keep open a
+    //persistent connection by using a Client rather than making one-off requests.
+    //If you do this, make sure to close the client when you're done:
+    Client client = http.Client();
     try {
       var response = await client.post(
           Uri.https('trutmereport.pythonanywhere.com', 'apis/qrcode/'),
@@ -72,6 +76,7 @@ class _ScannerState extends State<Scanner> {
       var uri = Uri.parse(decodedResponse['uri'] as String);
       print(await client.get(uri));
     } finally {
+      // this client close for to send one request to our server
       client.close();
     }
   }
